@@ -1,0 +1,39 @@
+<!-- FILEPATH: /C:/Users/lenovo/Desktop/final/micro-services-devops-part2/AngularClient/src/app/components/reservations/reservations.component.html -->
+<!-- BEGIN: abpxx6d04wxr -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Ressources</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">ressource Type</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="ressource | paginate: { itemsPerPage: 3, currentPage: pages } ; else anotherTable">
+                        <th scope="row">{{ressource.id}}</th>
+                        <td>{{ressource.nom}}</td>
+                        <td>{{ressource.ressourceType}}</td>
+
+                    </tr>
+                    <ng-template #anotherTable>
+                        <tr  *ngFor="let ressource of ressources | paginate: { itemsPerPage: 3, currentPage: pages }">
+                            <th scope="row">{{ressource.id}}</th>
+                            <td>{{ressource.nom}}</td>
+                            <td>{{ressource.ressourceType}}</td>
+                        </tr>
+
+                    </ng-template>
+
+
+                </tbody>
+            </table>
+          <pagination-controls (pageChange)="pages = $event"></pagination-controls>
+
+        </div>
+    </div>
+</div>

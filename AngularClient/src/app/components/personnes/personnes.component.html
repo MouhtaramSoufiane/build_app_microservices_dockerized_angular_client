@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Personnes</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">email</th>
+                        <th scope="col">fonction</th>
+                        <th scope="col">reservations</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let personne of personnes | paginate: { itemsPerPage: 3, currentPage: pages }">
+                        <th scope="row">{{personne.id}}</th>
+                        <td>{{personne.nom}}</td>
+                        <td>{{personne.email}}</td>
+                        <td>{{personne.fonction}}</td>
+                        <td><a class="btn btn-light" (click)="voirReservations(personne.id)">Voir</a></td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+          <pagination-controls (pageChange)="pages = $event"></pagination-controls>
+        </div>
+    </div>
+</div>

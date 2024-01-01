@@ -1,0 +1,150 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-10">
+              <h1>Reservations</h1>
+
+            </div>
+            <div class="col-2">
+              <button *ngIf="securityService.hasRoleIn(['ADMIN'])" data-bs-toggle="modal" data-bs-target="#addModal" type="button" class="btn btn-info" style="border-radius: 30px;"><i class="fa fa-plus"></i> Ajouter  Reservation</button>
+
+            </div>
+          </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Context</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Duree</th>
+                        <th scope="col">Personne</th>
+                       <th scope="col">Ressource</th>
+                    </tr>
+                </thead>
+                <tbody>
+                            <tr *ngFor="let reservation of reservations | paginate: { itemsPerPage: 5, currentPage: pages }" >
+                                <th scope="row">{{reservation.id}}</th>
+                                <td>{{reservation.nom}}</td>
+                                <td>{{reservation.context}}</td>
+                                <td>{{reservation.date}}</td>
+                                <td>{{reservation.duree | number:'1.2-2'}}</td>
+                                <td>{{reservation.personne.nom}}</td>
+                                <td><a class="btn btn-light" (click)="voirRessource(reservation.ressourceId)">Voir</a></td>
+                                <td *ngIf="securityService.hasRoleIn(['ADMIN'])" ><a  (click)="handleDeleteReservation(reservation.id)" class="btn btn-danger"><i class="fa fa-trash" style="color: white"></i></a></td>
+                                <td *ngIf="securityService.hasRoleIn(['ADMIN'])" ><a data-bs-toggle="modal" data-bs-target="#updateModal" (click)="handleEditReservation(reservation)" class="btn btn-success"><i class="fa fa-edit" style="color: white"></i></a></td>
+
+                            </tr>
+                            <tr *ngFor="let reservation of reservationsPersonnes" >
+                                <th scope="row">{{reservation.id}}</th>
+                                <td>{{reservation.nom}}</td>
+                                <td>{{reservation.context}}</td>
+                                <td>{{reservation.date}}</td>
+                                <td>{{reservation.duree | number:'1.2-2'}}</td>
+                                <td>{{reservation.personne.nom}}</td>
+                                <td><a class="btn btn-light" (click)="voirRessource(reservation.ressourceId)">Voir</a></td>
+                                <td *ngIf="securityService.hasRoleIn(['ADMIN'])"><a (click)="handleDeleteReservation(reservation.id)" class="btn btn-danger"><i class="fa fa-trash" style="color: white"></i></a></td>
+                                <td *ngIf="securityService.hasRoleIn(['ADMIN'])"><a data-bs-toggle="modal" data-bs-target="#updateModal" (click)="handleEditReservation(reservation)" class="btn btn-success"><i class="fa fa-edit" style="color: white"></i></a></td>
+
+                            </tr>
+
+                </tbody>
+
+            </table>
+            <pagination-controls (pageChange)="pages = $event"></pagination-controls>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Update Modal -->
+<div  class="modal fade" id="updateModal"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-3 text-center" >Modifier Information de reservation </h1>
+        <button type="button" class="btn-close" aria-label="Close"  data-bs-dismiss="modal" ></button>
+      </div>
+      <div   class="modal-body text-center">
+        <form [formGroup]="editRes">
+          <span class="fw-bold ">Nom: </span><br>
+          <input type="text" class="form-control" formControlName="nom" >
+          <span class="fw-bold">Context: </span><br>
+          <input type="text" class="form-control"  formControlName="context">
+          <span class="fw-bold">Date: </span><br>
+          <input type="text" class="form-control" formControlName="date" >
+          <span class="fw-bold">Duree: </span><br>
+          <input type="text" class="form-control" formControlName="duree" >
+          <div class="d-grid gap-2">
+            <button (click)="validEditReservation()" aria-label="Close"  data-bs-dismiss="modal"   type="submit" class="btn btn-info d-grid gap-2">Modifier</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+    </div>
+</div>
+
+
+
+<!-- Add Modal -->
+<div  class="modal fade" id="addModal"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-3 text-center" >Ajouter Information de reservation </h1>
+        <button type="button" class="btn-close" aria-label="Close"  data-bs-dismiss="modal" ></button>
+      </div>
+      <div   class="modal-body text-center">
+        <form [formGroup]="addRes">
+          <span class="fw-bold ">Nom: </span><br>
+          <input type="text" class="form-control" formControlName="nom" placeholder="Nom">
+          <span class="fw-bold">Context: </span><br>
+          <input type="text" class="form-control"  formControlName="context" placeholder="Context">
+          <span class="fw-bold">Date: </span><br>
+          <input type="text" class="form-control" formControlName="date" placeholder="Date">
+          <span class="fw-bold">Duree: </span><br>
+          <input type="text" class="form-control" formControlName="duree" placeholder="Duree">
+
+          <div class="row">
+            <div class="col-6">
+              <span class="fw-bold">Personne: </span><br>
+              <input type="text" class="form-control mb-2" formControlName="personne_nom"  placeholder="Nom">
+
+              <input type="text" class="form-control mb-2" formControlName="personne_email"  placeholder="Email">
+
+              <input type="text" class="form-control" formControlName="personne_fonction"  placeholder="Fonction">
+
+            </div>
+
+            <div class="col-6">
+              <span class="fw-bold">Ressource: </span><br>
+              <input type="text" class="form-control mb-2" formControlName="ressource_nom" placeholder="Nom" >
+              <div>
+                <label for="inputWithOptions">Choisir type:</label>
+                <select id="inputWithOptions" formControlName="ressource_type">
+                  <option *ngFor="let option of options" [value]="option">{{ option }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="d-grid gap-2">
+
+            <button (click)="handleAddReservation()" aria-label="Close"  data-bs-dismiss="modal"   type="submit" class="btn btn-info d-grid gap-2">Ajouter</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
